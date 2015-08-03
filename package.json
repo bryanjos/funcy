@@ -2,7 +2,10 @@
   "author": "Bram Stein <b.l.stein@gmail.com> (http://www.bramstein.com/)",
   "name": "funcy",
   "description": "An experiment in adding functional pattern matching to JavaScript.",
-  "keywords": ["pattern matching", "functional"],
+  "keywords": [
+    "pattern matching",
+    "functional"
+  ],
   "version": "0.0.2",
   "repository": {
     "type": "git",
@@ -13,5 +16,11 @@
     "node": "*"
   },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.0",
+    "gulp-eslint": "^1.0.0",
+    "gulp-mocha": "^2.1.3"
+  }
 }
