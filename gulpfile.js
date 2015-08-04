@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var mocha = require('gulp-mocha');
 var babel = require('gulp-babel');
 var eslint = require('gulp-eslint');
+var sourcemaps = require("gulp-sourcemaps");
 
 var libPath = './lib/**/*.js';
 var testPath = './test/**/*.spec.js';
@@ -9,13 +10,17 @@ var buildTestPath = './build/test/**/*.spec.js';
 
 gulp.task('build', function() {
   return gulp.src([libPath])
+      .pipe(sourcemaps.init())
       .pipe(babel({sourceMap: false, modules: 'common'}))
+      .pipe(sourcemaps.write('.'))
       .pipe(gulp.dest('./build/lib'));
 });
 
 gulp.task('build_test', function() {
   return gulp.src([testPath])
+      .pipe(sourcemaps.init())
       .pipe(babel({sourceMap: false, modules: 'common'}))
+      .pipe(sourcemaps.write('.'))
       .pipe(gulp.dest('./build/test'));
 });
 
