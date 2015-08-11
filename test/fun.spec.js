@@ -1,15 +1,15 @@
 import Chai from 'chai';
 const expect = Chai.expect;
 
-import funcy from '../lib/funcy';
+import fun from '../lib/funcy/fun';
 
-const _ = funcy.wildcard;
-const $ = funcy.parameter;
+const _ = fun.wildcard;
+const $ = fun.parameter;
 
 describe('example', () => {
   it('must correctly evaluate example', () => {
 
-    let fact = funcy.fun(
+    let fact = fun(
         [[0], () => 1],
         [[$], (n) => n * fact(n - 1) ]
     );
@@ -25,7 +25,7 @@ describe('example', () => {
 describe('fun', () => {
   it('must throw error when no match is found', () => {
 
-    let fn = funcy.fun(
+    let fn = fun(
         [[0], () => 1]
     );
 
@@ -34,7 +34,7 @@ describe('fun', () => {
 
   it('must have wildcard except everything', () => {
 
-    let fn = funcy.fun(
+    let fn = fun(
         [[_], () => 1]
     );
 
@@ -46,7 +46,7 @@ describe('fun', () => {
 
   it('must work symbols', () => {
 
-    let fn = funcy.fun(
+    let fn = fun(
         [[Symbol.for('infinity')], () => 1]
     );
 
@@ -56,7 +56,7 @@ describe('fun', () => {
 
   it('must match on values in object', () => {
 
-    let fn = funcy.fun(
+    let fn = fun(
         [[{value: $}], (val) => 1 + val],
         [[{a: {b: {c: $} } }], (val) => 1 - val]
     );
@@ -65,10 +65,21 @@ describe('fun', () => {
     expect(fn({a: {b: {c: 20} } })).to.equal(-19);
   });
 
+  it('must match on objects even when value has more keys', () => {
+
+    let fn = fun(
+        [[{value: $}], (val) => 1 + val],
+        [[{a: {b: {c: $} } }], (val) => 1 - val]
+    );
+
+    expect(fn({value: 20})).to.equal(21);
+    expect(fn({a: {b: {c: 20}, d: 10 } })).to.equal(-19);
+  });
+
   it('must match on substrings', () => {
 
-    let fn = funcy.fun(
-        [[funcy.startsWith("Bearer ")], (token) => token]
+    let fn = fun(
+        [[fun.startsWith("Bearer ")], (token) => token]
     );
 
     expect(fn("Bearer 1234")).to.equal("1234");
@@ -77,7 +88,7 @@ describe('fun', () => {
 
   it('must work with guards', () => {
 
-    let fn = funcy.fun(
+    let fn = fun(
         [[$], (number) => number, (number) => number > 0]
     );
 
@@ -87,20 +98,20 @@ describe('fun', () => {
 
   it('must capture entire match as parameter', () => {
 
-    let fn = funcy.fun(
-        [[funcy.capture({a: {b: {c: $} } })], (val, bound_value) => bound_value.a.b.c]
+    let fn = fun(
+        [[fun.capture({a: {b: {c: $} } })], (val, bound_value) => bound_value.a.b.c]
     );
 
     expect(fn({a: {b: {c: 20} } })).to.equal(20);
 
-    fn = funcy.fun(
-        [[funcy.capture([1, $, 3, $])], (a, b, bound_value) => bound_value.length]
+    fn = fun(
+        [[fun.capture([1, $, 3, $])], (a, b, bound_value) => bound_value.length]
     );
 
     expect(fn([1, 2, 3, 4])).to.equal(4);
 
-    fn = funcy.fun(
-        [[funcy.capture([1, funcy.capture({a: {b: {c: $} } }), 3, $])], (c, two, four, arg) => two.a.b.c]
+    fn = fun(
+        [[fun.capture([1, fun.capture({a: {b: {c: $} } }), 3, $])], (c, two, four, arg) => two.a.b.c]
     );
 
     expect(fn([1, {a: {b: {c: 20} } }, 3, 4])).to.equal(20);
@@ -108,8 +119,8 @@ describe('fun', () => {
 
   it('must produce a head and a tail', () => {
 
-    let fn = funcy.fun(
-        [[funcy.headTail], (head, tail) => tail]
+    let fn = fun(
+        [[fun.headTail], (head, tail) => tail]
     );
 
     expect(fn([3, 1, 2, 4]).length).to.equal(3);
